@@ -164,6 +164,10 @@ Plug 'nvim-tree/nvim-tree.lua' " nvim-web-devicons上面已安装，这里不再
 "" floating terminal 悬浮的终端
 Plug 'voldikss/vim-floaterm'
 
+"" Git相关
+" git signs
+Plug 'lewis6991/gitsigns.nvim'
+
 " 这里调用end()会开启filetype plugin syntax on和syntax enable
 " 如果有影响可以在下方关闭，添加filetype indent off和syntax off
 call plug#end()
@@ -182,6 +186,7 @@ luafile ~/.config/nvim/lsp_config.lua
 luafile ~/.config/nvim/auto_completion.lua
 luafile ~/.config/nvim/fileExplorer_config.lua
 luafile ~/.config/nvim/autoPairs_config.lua
+luafile ~/.config/nvim/git_config.lua
 source ~/.config/nvim/terminal_config.vim " vim-floaterm这个插件是用vimL写的
 
 " 方式二，直接写在init.vim中
@@ -190,6 +195,10 @@ lua << EOF
 -- 配置主题色
 -- tokyonight能够很好地支持lualine、treesitter、lsp
 vim.cmd[[colorscheme tokyonight-night]]
+-- tokyonight提供的git相关高亮颜色有两个问题1、太暗2、区分度低
+vim.cmd[[highlight GitSignsAdd guifg=#26a641]]
+vim.cmd[[highlight GitSignsChange guifg=#fddf68]]
+vim.cmd[[highlight GitSignsDelete guifg=#b62324]]
 
 -- 配置状态栏，用默认配置即可
 require('lualine').setup {
