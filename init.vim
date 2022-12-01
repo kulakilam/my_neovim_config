@@ -15,7 +15,12 @@ call plug#end()
 
 lua << EOF
 
-require('lsp_signature').setup()
+require('lsp_signature').setup({
+    debug = true,
+    log_path = '/Users/zhongwenbing/work_in_bytedance/test/c_test/sign_debug.log',
+    verbose = true,
+    cursorhold_update = false,
+})
 require('lspconfig').ccls.setup{}
 require('cmp').setup{}
 
