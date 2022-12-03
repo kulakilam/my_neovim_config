@@ -56,5 +56,37 @@ require('gitsigns').setup {
         enable = false
     },
 
-    -- 先不开启keymapping，目前满足高亮需求即可
+    -- 开启一些keymappings
+    -- 当attaching到一个buffer时，会执行这段配置代码，传入的参数是buffer number
+    -- 详见:h gitsigns-config-on_attach
+    on_attach = function(bufnr)
+        -- 详见:h package.loaded()
+        -- package.loaded[modname]会返回已加载的模块
+        local gs = package.loaded.gitsigns
+
+        local function map(mode, l, r, opts)
+            opts = opts or {}
+            opts.buffer = bufnr
+            vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        -- 跳转到下一个改动的代码块，如果是连续多行都有改动，会视为是一个hunk，
+        -- 这样体验比较好，不会每次只是跳一行
+        map('n', ']c', function()
+            if vim.wo.diff then return ']c' end
+            vim.schedule(function() gs.next_hunk() end)
+            return '<Ignore>'
+        end, {expr=true})
+        -- 跳转到上一个改动的代码块
+        map('n', '[c', function()
+            if vim.wo.diff then return '[c' end
+            vim.schedule(function() gs.prev_hunk() end)
+            return '<Ignore>'
+        end, {expr=true})
+
+        -- Actions
+        -- 进入diff模式，能更直观地看到当前buffer改动了啥
+        map('n', '<leader>hd', gs.diffthis)
+    end
 }
