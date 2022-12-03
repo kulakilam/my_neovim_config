@@ -9,7 +9,8 @@
 -- silent表示命令行执行时不会显示在命令行上
 local opts = { noremap=true, silent=true }
 -- 'n'表示normal模式
--- open_float 把诊断信息显示在一个float window上，默认是通过sign方式显示在句末
+-- open_float 把诊断信息显示在一个floating window上，默认是通过sign方式显示在句末
+-- 按两次快捷键，光标可以移动到floating window内，当有很多报错需要滚动时，这个很有用
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
 -- goto_prev和goto_next是跳到上一个或者下一个有报错的地方
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
@@ -169,6 +170,7 @@ require('lspconfig').tsserver.setup {
 }
 
 -- pylsp
+-- @todo：似乎没有代码诊断的功能
 require('lspconfig').pylsp.setup {
     on_attach = on_attach,
     flags = lsp_flags,

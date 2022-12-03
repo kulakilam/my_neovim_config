@@ -15,6 +15,8 @@ require('gitsigns').setup {
     numhl      = true, -- Toggle with `:Gitsigns toggle_numhl`
     -- 是否开启行的高亮
     linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
+    -- 开启字符级别的diff，现在开启的显示颜色有问题，暂不开
+    -- 据说neovim 0.9 将支持行内的diff，详见https://twitter.com/Neovim/status/1589420555799007233
     word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
 
     -- 监听.git目录来感知变化，从而能够更新signs
