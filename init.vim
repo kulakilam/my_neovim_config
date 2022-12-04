@@ -17,7 +17,6 @@ lua << EOF
 
 require('lsp_signature').setup({
     debug = true,
-    log_path = '/Users/zhongwenbing/work_in_bytedance/test/c_test/sign_debug.log',
     verbose = true,
     cursorhold_update = false,
 })
