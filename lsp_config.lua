@@ -24,9 +24,6 @@ vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 -- 配置signature-help，先使用默认配置，先放在这里，如果后面要更定制化一些，再单独开个文件吧
 -- 注意：需要配置在lspconfig之前
 require('lsp_signature').setup({
-    debug = true,
-    log_path = '/Users/zhongwenbing/work_in_bytedance/test/c_test/sign_debug.log',
-    verbose = true,
     cursorhold_update = false,
 })
 
