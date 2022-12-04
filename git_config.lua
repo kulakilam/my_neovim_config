@@ -88,5 +88,6 @@ require('gitsigns').setup {
         -- Actions
         -- 进入diff模式，能更直观地看到当前buffer改动了啥
         map('n', '<leader>hd', gs.diffthis)
+        map('n', '<leader>hb', function() gs.blame_line{full=true} end)
     end
 }
