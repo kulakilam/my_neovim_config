@@ -89,30 +89,6 @@ autocmd BufReadPost *
     \   exe "normal! g`\"" |
     \ endif
 
-" "" Terminal Function
-" let g:term_buf = 0
-" let g:term_win = 0
-" function! TermToggle(height)
-"     if win_gotoid(g:term_win)
-"         hide
-"     else
-"         botright new
-"         exec "resize " . a:height
-"         try
-"             exec "buffer " . g:term_buf
-"         catch
-"             call termopen($SHELL, {"detach": 0})
-"             let g:term_buf = bufnr("")
-"             set nonumber
-"             set norelativenumber
-"             set signcolumn=no
-"         endtry
-"         startinsert!
-"         let g:term_win = win_getid()
-"     endif
-" endfunction
-" map <leader>tt :call TermToggle(12)<cr>
-
 " ================= vim-plug 插件管理器 =================
 " vim-plug自身的代码文件放在stdpath('data')/site/autoload/下
 " 默认在stdpath('data')/plugged/目录下存放插件，也可以创建一个目录，然后把路径传递给begin()
