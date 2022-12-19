@@ -41,7 +41,7 @@ require('gitsigns').setup {
     -- 防抖
     update_debounce = 100,
     status_formatter = nil, -- Use default
-    -- 如果文件操作这个行数，则git sign的功能会被关闭
+    -- 如果文件超过这个行数，则git sign的功能会被关闭
     max_file_length = 40000, -- Disable if file is longer than this (in lines)
     -- 应该是使用floating window做预览功能
     preview_config = {
@@ -88,6 +88,7 @@ require('gitsigns').setup {
         -- Actions
         -- 进入diff模式，能更直观地看到当前buffer改动了啥
         map('n', '<leader>hd', gs.diffthis)
-        map('n', '<leader>hb', function() gs.blame_line{full=true} end)
+        -- full为true好像是会把该次改动的所有代码也都显示出来，没有必要
+        map('n', '<leader>hb', function() gs.blame_line{ full = false } end)
     end
 }
