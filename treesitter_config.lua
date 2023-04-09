@@ -2,7 +2,7 @@ require('nvim-treesitter.configs').setup {
     -- parser的名字列表，也可以直接写一个'all'
     -- 可以通过:TSInstallInfo查看所有parser的名字
     -- @todo：html的高亮效果有很严重的问题，先删除，还不如自带的高亮
-    ensure_installed = { 'c', 'go', 'help', 'lua', 'json', 'python', 'vim', 'html', 'javascript', 'css' },
+    ensure_installed = { 'c', 'go', 'vimdoc', 'lua', 'json', 'python', 'vim', 'html', 'javascript', 'css' },
 
     -- 是否同步安装parser，false表示并行安装（只对上面`ensure_installed`有效）
     sync_install = false,
@@ -27,7 +27,7 @@ require('nvim-treesitter.configs').setup {
         enable = true,
 
         -- -- 要关闭highlight功能的parser，注意这里是parser名称，不是filetype
-        -- disable = { 'help' },
+        -- disable = { 'vimdoc' },
 
         -- 也可以使用一个函数来判断是否disable，更加灵活，比如下面这个是判断文件大小
         -- 当文件大小超过max_filesize，不开启treesitter的highlight
@@ -44,7 +44,7 @@ require('nvim-treesitter.configs').setup {
         --   可能会让编辑器更慢，同时也可能是出现重复的高亮
         -- 也可以设置成parser列表
         additional_vim_regex_highlighting = {
-            'help' -- help这个parser的高亮太少了，不如vim自带的
+            'vimdoc' -- vimdoc这个parser的高亮太少了，不如vim自带的
         },
     },
 }
