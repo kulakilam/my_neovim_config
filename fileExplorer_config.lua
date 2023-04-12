@@ -40,10 +40,6 @@ require('nvim-tree').setup({
     --        就得特意把光标移动到一个非目录的行上
     create_in_closed_folder = false,
 
-    open_on_setup = false, -- 会在启动vim时打开目录树
-    open_on_setup_file = false,
-    ignore_ft_on_setup = {}, -- 跟open_on_setup搭配，忽略你不想要打开tree的filetype
-
     sort_by = 'case_sensitive', -- 大写字母的会排在前面，其他的还是按照字母排序
     hijack_cursor = true, -- 保持光标始终在文件名/目录名的第一个字符
     select_prompts = false, -- 改变选择的提示交互过程，还是默认的false体验好一点
