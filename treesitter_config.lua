@@ -2,7 +2,20 @@ require('nvim-treesitter.configs').setup {
     -- parser的名字列表，也可以直接写一个'all'
     -- 可以通过:TSInstallInfo查看所有parser的名字
     -- @todo：html的高亮效果有很严重的问题，先删除，还不如自带的高亮
-    ensure_installed = { 'c', 'go', 'vimdoc', 'lua', 'json', 'python', 'vim', 'html', 'javascript', 'css' },
+    ensure_installed = {
+        'c',
+        'go',
+        'vimdoc',
+        'lua',
+        'json',
+        'python',
+        'vim',
+        'html',
+        'javascript',
+        'css',
+        'scss',
+        'vue'
+    },
 
     -- 是否同步安装parser，false表示并行安装（只对上面`ensure_installed`有效）
     sync_install = false,

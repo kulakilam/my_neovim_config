@@ -133,6 +133,9 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'ray-x/lsp_signature.nvim'
 " 自动配对
 Plug 'windwp/nvim-autopairs'
+" 注释
+Plug 'numToStr/Comment.nvim'
+Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 
 "" 文件管理器
 Plug 'nvim-tree/nvim-tree.lua' " nvim-web-devicons上面已安装，这里不再重复安装了
@@ -184,6 +187,12 @@ require('lualine').setup {
         -- 这里好像只能设置成tokyonight，不能设置成tokyonight-night，否则会报错
         theme = 'tokyonight'
     }
+}
+
+-- 配置Comment.nvim
+require('Comment').setup {
+    -- Comment.nvim目前不支持jsx/tsx，需要依赖nvim-ts-context-commentstring插件
+    pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
 }
 
 EOF
