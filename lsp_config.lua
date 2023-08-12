@@ -197,3 +197,15 @@ require('lspconfig').jsonls.setup {
     flags = lsp_flags,
     handlers = handlers,
 }
+
+-- volar
+-- vue3的language server，另外一个是vuels，但安装后会提示vue3默认用volar
+require('lspconfig').volar.setup {
+    on_attach = on_attach,
+    flags = lsp_flags,
+    handlers = handlers,
+    -- 因为一个vue项目工程下会包含多种文件类型，如果这里只配置了vue文件类型，
+    -- 不能实现不同类型之间的代码跳转，比如要从ts跳转到vue文件中
+    -- @todo：这里配置了json、ts等，是否会跟其他language server冲突？优先级如何？
+    filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json'}
+}
