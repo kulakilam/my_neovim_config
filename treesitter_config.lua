@@ -60,4 +60,6 @@ require('nvim-treesitter.configs').setup {
             'vimdoc' -- vimdoc这个parser的高亮太少了，不如vim自带的
         },
     },
+    -- 应该是插件TS更新后增加了modules配置项，如果这里缺失这个key，lua的lsp会有warning级别的提示，先加上
+    modules = {}
 }
