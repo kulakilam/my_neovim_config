@@ -62,13 +62,6 @@ require('nvim-tree').setup({
                 anchor = 'SW', -- 配置floating window显示的方位，不知道为啥没有生效
             },
         },
-        -- 快捷键映射，详见:nvim-tree-default-mappings
-        mappings = {
-            custom_only = false, -- true表示只使用用户自定义的mappings
-            list = {
-                -- user mappings go here
-            },
-        },
     },
     renderer = {
         group_empty = true, -- 当一个目录下只有一个目录时，会显示在一起
@@ -129,7 +122,7 @@ require('nvim-tree').setup({
             quit_on_open = false, -- 当从tree上打开一个文件时，关闭tree。如果不是从tree上打开的，不会关闭
             resize_window = true, -- 当从tree上打开一个文件时，resize窗口大小。如果不是从tree上打开的，不会resize
             -- 打开文件时，如果有多个窗口，需要选择一个窗口
-            -- 如果是用大O打开文件，不需要选择，关于大O，详见:h nvim-tree-default-mappings
+            -- 如果是用大O打开文件，不需要选择，关于大O，详见:h nvim-tree-mappings-default
             window_picker = {
                 enable = true,
                 chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', -- 选择窗口时的字符选项
@@ -190,4 +183,68 @@ require('nvim-tree').setup({
             watcher = false,
         },
     },
+})
+
+require("symbols-outline").setup({
+  highlight_hovered_item = true,
+  show_guides = true,
+  auto_preview = false,
+  position = 'right',
+  relative_width = true,
+  width = 25,
+  auto_close = false,
+  show_numbers = false,
+  show_relative_numbers = false,
+  show_symbol_details = true,
+  preview_bg_highlight = 'Pmenu',
+  autofold_depth = nil,
+  auto_unfold_hover = true,
+  fold_markers = { '', '' },
+  wrap = false,
+  keymaps = { -- These keymaps can be a string or a table for multiple keys
+    close = {"<Esc>", "q"},
+    goto_location = "<Cr>",
+    focus_location = "o",
+    hover_symbol = "<C-space>",
+    toggle_preview = "K",
+    rename_symbol = "r",
+    code_actions = "a",
+    fold = "h",
+    unfold = "l",
+    fold_all = "W",
+    unfold_all = "E",
+    fold_reset = "R",
+  },
+  lsp_blacklist = {},
+  symbol_blacklist = {},
+  symbols = {
+    File = { icon = "", hl = "@text.uri" },
+    Module = { icon = "", hl = "@namespace" },
+    Namespace = { icon = "", hl = "@namespace" },
+    Package = { icon = "", hl = "@namespace" },
+    Class = { icon = "𝓒", hl = "@type" },
+    Method = { icon = "ƒ", hl = "@method" },
+    Property = { icon = "", hl = "@method" },
+    Field = { icon = "", hl = "@field" },
+    Constructor = { icon = "", hl = "@constructor" },
+    Enum = { icon = "ℰ", hl = "@type" },
+    Interface = { icon = "ﰮ", hl = "@type" },
+    Function = { icon = "", hl = "@function" },
+    Variable = { icon = "", hl = "@constant" },
+    Constant = { icon = "", hl = "@constant" },
+    String = { icon = "𝓐", hl = "@string" },
+    Number = { icon = "#", hl = "@number" },
+    Boolean = { icon = "⊨", hl = "@boolean" },
+    Array = { icon = "", hl = "@constant" },
+    Object = { icon = "⦿", hl = "@type" },
+    Key = { icon = "🔐", hl = "@type" },
+    Null = { icon = "NULL", hl = "@type" },
+    EnumMember = { icon = "", hl = "@field" },
+    Struct = { icon = "𝓢", hl = "@type" },
+    Event = { icon = "🗲", hl = "@type" },
+    Operator = { icon = "+", hl = "@operator" },
+    TypeParameter = { icon = "𝙏", hl = "@parameter" },
+    Component = { icon = "", hl = "@function" },
+    Fragment = { icon = "", hl = "@constant" },
+  },
 })
