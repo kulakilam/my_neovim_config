@@ -210,3 +210,14 @@ require('lspconfig').jsonls.setup {
 --     -- @todo：这里配置了json、ts等，是否会跟其他language server冲突？优先级如何？
 --     filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json'}
 -- }
+
+-- jdtls，java的lsp
+-- jdtls直接用homebrew安装
+-- lombok下载地址：https://projectlombok.org/download
+-- @todo: 虽然在jvm参数中配置了lombok.jar，但还是会报错，但是在~/.zshrc中配置
+--        export JDTLS_JVM_ARGS="-javaagent:${PATH_TO_LOMBOK}/lombok.jar"后可以解决
+require('lspconfig').jdtls.setup {
+    on_attach = on_attach,
+    flags = lsp_flags,
+    handlers = handlers,
+}
