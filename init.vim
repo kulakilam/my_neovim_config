@@ -1,5 +1,5 @@
 " 保持checkhealth良好运行
-let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python3_host_prog = '/usr/bin/python3'
 let g:loaded_perl_provider = 0 " 禁用perl
 let g:loaded_ruby_provider = 0 " 禁用ruby
 
@@ -193,7 +193,9 @@ require('lualine').setup {
         -- theme默认是auto，自动拿了colorscheme的值，
         -- 除非是colorscheme设置成别的，而只有状态栏想用特定主题色
         -- 这里好像只能设置成tokyonight，不能设置成tokyonight-night，否则会报错
-        theme = 'tokyonight'
+        theme = 'tokyonight',
+        -- 1表示显示文件的相对路径
+        path = 1
     }
 }
 
