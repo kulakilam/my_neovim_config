@@ -52,9 +52,10 @@ set tabstop=4 " 默认是8，指的是一个<tab>的宽度
 
 " @todo：这里未来可以考虑高级用法，结合wrapmargin、formatexpr等配置
 set textwidth=100 " 默认是0，不限制一行的长度，这里暂定100
+set nowrap
 
 " 滚动时光标保持跟上下窗口边界有7行的距离
-set scrolloff=7
+set scrolloff=3
 
 set ignorecase " 搜索时，开启大小写忽略，默认是关闭的
 set smartcase  " 当搜索词中包含大写，会自动忽覆盖掉ignorecase，变成大小写敏感
