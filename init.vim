@@ -156,6 +156,9 @@ Plug 'voldikss/vim-floaterm'
 " git signs
 Plug 'lewis6991/gitsigns.nvim', { 'tag': 'v0.9.0' }
 
+"" AI相关
+Plug 'olimorris/codecompanion.nvim'
+
 " 这里调用end()会开启filetype plugin syntax on和syntax enable
 " 如果有影响可以在下方关闭，添加filetype indent off和syntax off
 call plug#end()
@@ -175,6 +178,7 @@ luafile ~/.config/nvim/auto_completion.lua
 luafile ~/.config/nvim/fileExplorer_config.lua
 luafile ~/.config/nvim/autoPairs_config.lua
 luafile ~/.config/nvim/git_config.lua
+luafile ~/.config/nvim/llm_config.lua
 source ~/.config/nvim/terminal_config.vim " vim-floaterm这个插件是用vimL写的
 
 " 方式二，直接写在init.vim中
