@@ -157,6 +157,7 @@ Plug 'voldikss/vim-floaterm'
 Plug 'lewis6991/gitsigns.nvim', { 'tag': 'v0.9.0' }
 
 "" AI相关
+Plug 'nvim-lua/plenary.nvim'
 Plug 'olimorris/codecompanion.nvim'
 
 " 这里调用end()会开启filetype plugin syntax on和syntax enable
