@@ -160,7 +160,7 @@ require('lspconfig').bashls.setup {
 
 -- tsserver
 -- 如果是单文件的，按gr会报错 Error: No Project.
-require('lspconfig').tsserver.setup {
+require('lspconfig').ts_ls.setup {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
