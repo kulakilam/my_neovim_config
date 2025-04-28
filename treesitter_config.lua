@@ -13,9 +13,12 @@ require('nvim-treesitter.configs').setup {
         'html',
         "java",
         'javascript',
+        'typescript',
         'css',
         'scss',
-        'vue'
+        'vue',
+        'markdown',
+        'yaml'
     },
 
     -- 是否同步安装parser，false表示并行安装（只对上面`ensure_installed`有效）
