@@ -144,7 +144,7 @@ Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'RRethy/vim-illuminate'
 
 "" 文件管理器
-Plug 'nvim-tree/nvim-tree.lua' " nvim-web-devicons上面已安装，这里不再重复安装了
+Plug 'nvim-tree/nvim-tree.lua', { 'tag': 'v1.4.0' } " nvim-web-devicons上面已安装，这里不再重复安装了
 
 "" taglist
 Plug 'simrat39/symbols-outline.nvim'
@@ -154,7 +154,7 @@ Plug 'voldikss/vim-floaterm'
 
 "" Git相关
 " git signs
-Plug 'lewis6991/gitsigns.nvim'
+Plug 'lewis6991/gitsigns.nvim', { 'tag': 'v0.9.0' }
 
 " 这里调用end()会开启filetype plugin syntax on和syntax enable
 " 如果有影响可以在下方关闭，添加filetype indent off和syntax off
