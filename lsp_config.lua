@@ -47,7 +47,10 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts) -- 跳转到定义
     -- 光标所在变量的文档介绍
     -- 操作：按两次可以让光标进入文档，按q会关闭文档、光标回到之前的位置
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+    -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+    vim.keymap.set('n', 'K', function()
+        vim.lsp.buf.hover({ border = "rounded" })
+    end, bufopts)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts) -- 跳转到实现
     vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts) -- 当你在输入函数参数时，会有一些提示
     vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
