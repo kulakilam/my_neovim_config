@@ -76,8 +76,6 @@ map <Leader>tn :tabn<cr>
 map <Leader>tp :tabp<cr>
 " 打开nvim-tree
 map <Leader>nt :NvimTreeToggle<cr>
-" 打开SymbolsOutline
-map <leader>so :SymbolsOutline<cr>
 
 " 按0时也跳到第一个非空字符，而不是跳到行首
 map 0 ^
@@ -147,7 +145,7 @@ Plug 'RRethy/vim-illuminate'
 Plug 'nvim-tree/nvim-tree.lua', { 'tag': 'v1.4.0' } " nvim-web-devicons上面已安装，这里不再重复安装了
 
 "" taglist
-Plug 'simrat39/symbols-outline.nvim'
+Plug 'hedyhli/outline.nvim'
 
 "" floating terminal 悬浮的终端
 Plug 'voldikss/vim-floaterm'
@@ -267,5 +265,7 @@ require('illuminate').configure({
     -- case_insensitive_regex: sets regex case sensitivity
     case_insensitive_regex = false,
 })
+
+require("outline").setup({})
 
 EOF
