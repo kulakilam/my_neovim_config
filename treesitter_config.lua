@@ -1,4 +1,4 @@
-require('nvim-treesitter.configs').setup {
+require('nvim-treesitter.configs').setup({
     -- parser的名字列表，也可以直接写一个'all'
     -- 可以通过:TSInstallInfo查看所有parser的名字
     -- @todo：html的高亮效果有很严重的问题，先删除，还不如自带的高亮
@@ -50,7 +50,7 @@ require('nvim-treesitter.configs').setup {
         -- 当文件大小超过max_filesize，不开启treesitter的highlight
         -- @todo：如果给大文件手动开启treesitter高亮，怎么操作？
         disable = function(lang, buf)
-            local max_filesize = 1 * 1024 * 1024 -- 单位是bytes，1MB
+            local max_filesize = 5 * 1024 * 1024 -- 单位是bytes，5MB
             local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
             if ok and stats and stats.size > max_filesize then
                 return true
@@ -66,4 +66,4 @@ require('nvim-treesitter.configs').setup {
     },
     -- 应该是插件TS更新后增加了modules配置项，如果这里缺失这个key，lua的lsp会有warning级别的提示，先加上
     modules = {}
-}
+})
