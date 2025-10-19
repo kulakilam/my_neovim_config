@@ -93,7 +93,7 @@ local handlers =  {
 
 -- ==================== 每个language server的配置 ====================
 -- lua
-require('lspconfig').lua_ls.setup {
+vim.lsp.config('lua_ls', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
@@ -118,7 +118,8 @@ require('lspconfig').lua_ls.setup {
             },
         },
     },
-}
+})
+vim.lsp.enable('lua_ls')
 
 -- gopls
 -- 目前常见的问题：
@@ -129,11 +130,12 @@ require('lspconfig').lua_ls.setup {
 --    解决1：打开go.mod，第一行会报错，这时候执行<space>ca调出code action的修复建议，有两个选项
 --          第一是执行go mod tidy，第二个是更新go.sum，我选择第一个好像不起作用，第二个就能修复
 --    解决2：可能跟你的go版本有关系，所以把你的go版本升级到跟go.mod里面一样的
-require('lspconfig').gopls.setup {
+vim.lsp.config('gopls', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
-}
+})
+vim.lsp.enable('gopls')
 
 -- ccls
 -- 如果遇到代码中出现很多报错，可能是需要把一些路径加入到include中
@@ -146,37 +148,41 @@ require('lspconfig').gopls.setup {
 -- ```
 -- -I/Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk/usr/include/
 -- ```
-require('lspconfig').ccls.setup {
+vim.lsp.config('ccls', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
-}
+})
+vim.lsp.enable('bashls')
 
 -- bashls
 -- 需要安装shellcheck(https://github.com/koalaman/shellcheck)，用brew install shellcheck
 -- 如果没有安装，lsp.log中会报错
-require('lspconfig').bashls.setup {
+vim.lsp.config('bashls', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
-}
+})
+vim.lsp.enable('bashls')
 
 -- tsserver
 -- 如果是单文件的，按gr会报错 Error: No Project.
-require('lspconfig').ts_ls.setup {
+vim.lsp.config('ts_ls', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
     -- filetypes = {'javascript', 'javascriptreact'}
-}
+})
+vim.lsp.enable('ts_ls')
 
 -- pylsp
 -- @todo：似乎没有代码诊断的功能
-require('lspconfig').pylsp.setup {
+vim.lsp.config('pylsp', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
-}
+})
+vim.lsp.enable('pylsp')
 
 -- vimls
 -- 按K查看文档的效果还不如不装language server
@@ -189,18 +195,20 @@ require('lspconfig').pylsp.setup {
 
 -- intelephense
 -- PHP的language server，感觉php的文档(按K)比其他语言的看着舒服
-require('lspconfig').intelephense.setup {
+vim.lsp.config('intelephense', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
-}
+})
+vim.lsp.enable('intelephense')
 
 -- jsonls
-require('lspconfig').jsonls.setup {
+vim.lsp.config('jsonls', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
-}
+})
+vim.lsp.enable('jsonls')
 
 -- volar
 -- vue3的language server，另外一个是vuels，但安装后会提示vue3默认用volar
@@ -219,8 +227,9 @@ require('lspconfig').jsonls.setup {
 -- lombok下载地址：https://projectlombok.org/download
 -- @todo: 虽然在jvm参数中配置了lombok.jar，但还是会报错，但是在~/.zshrc中配置
 --        export JDTLS_JVM_ARGS="-javaagent:${PATH_TO_LOMBOK}/lombok.jar"后可以解决
-require('lspconfig').jdtls.setup {
+vim.lsp.config('jdtls', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
-}
+})
+vim.lsp.enable('jdtls')
