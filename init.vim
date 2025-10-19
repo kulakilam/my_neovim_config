@@ -98,7 +98,7 @@ autocmd BufReadPost *
 call plug#begin()
 
 "" treesitter
-Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' } " 自动更新所有parser
+Plug 'nvim-treesitter/nvim-treesitter', { 'tag': 'v0.10.0', 'do': ':TSUpdate' } " 自动更新所有parser
 
 "" nvim-lspconfig
 Plug 'neovim/nvim-lspconfig' " 官方插件，纯lua编写
