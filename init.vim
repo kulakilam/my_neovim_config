@@ -159,6 +159,7 @@ Plug 'lewis6991/gitsigns.nvim', { 'tag': 'v0.9.0' }
 "" AI相关
 Plug 'nvim-lua/plenary.nvim'
 Plug 'olimorris/codecompanion.nvim'
+Plug 'https://code.byted.org/chenjiaqi.cposture/codeverse.vim.git'
 
 " 这里调用end()会开启filetype plugin syntax on和syntax enable
 " 如果有影响可以在下方关闭，添加filetype indent off和syntax off
