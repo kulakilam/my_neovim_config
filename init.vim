@@ -116,6 +116,8 @@ Plug 'nvim-tree/nvim-web-devicons' " 在状态栏中支持一些icons，nvim-tre
 "" 主题色
 " 可以在这里找：https://github.com/topics/neovim-colorscheme?o=desc&s=stars
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+" 缩进线
+Plug 'lukas-reineke/indent-blankline.nvim'
 
 "" 自动补全
 " 暂时只引入LSP和文件路径的自动补全，像cmdline、buffer的暂时不需要
@@ -267,5 +269,11 @@ require('illuminate').configure({
 })
 
 require("outline").setup({})
+
+require("ibl").setup({
+    scope = {
+        enabled = false;
+    }
+})
 
 EOF
