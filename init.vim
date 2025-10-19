@@ -156,6 +156,9 @@ Plug 'voldikss/vim-floaterm'
 " git signs
 Plug 'lewis6991/gitsigns.nvim', { 'tag': 'v0.9.0' }
 
+"" 搜索相关
+Plug 'folke/flash.nvim'
+
 "" AI相关
 Plug 'nvim-lua/plenary.nvim'
 Plug 'olimorris/codecompanion.nvim'
@@ -182,6 +185,7 @@ luafile ~/.config/nvim/autoPairs_config.lua
 luafile ~/.config/nvim/git_config.lua
 luafile ~/.config/nvim/llm_config.lua
 source ~/.config/nvim/terminal_config.vim " vim-floaterm这个插件是用vimL写的
+luafile ~/.config/nvim/search_config.lua
 
 " 方式二，直接写在init.vim中
 lua << EOF
