@@ -186,6 +186,7 @@ luafile ~/.config/nvim/git_config.lua
 luafile ~/.config/nvim/llm_config.lua
 source ~/.config/nvim/terminal_config.vim " vim-floaterm这个插件是用vimL写的
 luafile ~/.config/nvim/search_config.lua
+luafile ~/.config/nvim/statusline.lua
 
 " 方式二，直接写在init.vim中
 lua << EOF
@@ -197,18 +198,6 @@ vim.cmd[[colorscheme tokyonight-night]]
 vim.cmd[[highlight GitSignsAdd guifg=#26a641]]
 vim.cmd[[highlight GitSignsChange guifg=#fddf68]]
 vim.cmd[[highlight GitSignsDelete guifg=#b62324]]
-
--- 配置状态栏，用默认配置即可
-require('lualine').setup {
-    options = {
-        -- theme默认是auto，自动拿了colorscheme的值，
-        -- 除非是colorscheme设置成别的，而只有状态栏想用特定主题色
-        -- 这里好像只能设置成tokyonight，不能设置成tokyonight-night，否则会报错
-        theme = 'tokyonight',
-        -- 1表示显示文件的相对路径
-        path = 1
-    }
-}
 
 -- 配置Comment.nvim
 require('Comment').setup {
