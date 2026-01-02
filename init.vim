@@ -154,7 +154,7 @@ Plug 'voldikss/vim-floaterm'
 
 "" Git相关
 " git signs
-Plug 'lewis6991/gitsigns.nvim', { 'tag': 'v0.9.0' }
+Plug 'lewis6991/gitsigns.nvim', { 'tag': 'v1.0.2' }
 
 "" 搜索相关
 Plug 'folke/flash.nvim'
