@@ -114,7 +114,7 @@ require('neogit').setup {
         diffview = true, -- 继承diffview插件
     },
     disable_context_highlighting = true, -- 这个如果是false，光标经过的diff片段就会有灰色背景色高亮
-    kind = 'floating',
+    kind = 'tab',
 }
 vim.api.nvim_create_autocmd("FileType", { -- 把cursorline关掉，不然很奇怪
     pattern = {
