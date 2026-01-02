@@ -108,3 +108,33 @@ vim.api.nvim_set_hl(0, 'GitSignsChangedeleteNr', { link = 'GitSignsChangeNr' })
 vim.api.nvim_set_hl(0, 'GitSignsUntracked', { link = 'GitSignsAdd' })
 vim.api.nvim_set_hl(0, 'GitSignsUntrackedLn', { link = 'GitSignsAddLn' })
 vim.api.nvim_set_hl(0, 'GitSignsUntrackedNr', { link = 'GitSignsAddNr' })
+
+require('neogit').setup {
+    integrations = {
+        diffview = true, -- 继承diffview插件
+    },
+    disable_context_highlighting = true, -- 这个如果是false，光标经过的diff片段就会有灰色背景色高亮
+    kind = 'floating',
+}
+vim.api.nvim_create_autocmd("FileType", { -- 把cursorline关掉，不然很奇怪
+    pattern = {
+        "NeogitStatus",
+        "NeogitCommitMessage",
+        "NeogitLogView",
+        "NeogitNotification",
+        "NeogitPopup",
+        "NeogitRebaseTodo",
+    },
+    callback = function()
+        vim.opt_local.cursorline = false
+    end,
+})
+
+require("diffview").setup {
+    file_panel = {
+        listing_style = "tree", -- 或"list"
+        win_config = {
+            width = 30, -- 设置宽度
+        },
+    },
+}

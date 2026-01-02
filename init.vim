@@ -98,7 +98,7 @@ autocmd BufReadPost *
 call plug#begin()
 
 "" treesitter
-Plug 'nvim-treesitter/nvim-treesitter', { 'tag': 'v0.10.0', 'do': ':TSUpdate' } " 自动更新所有parser
+Plug 'nvim-treesitter/nvim-treesitter', { 'branch': 'master', 'do': ':TSUpdate' } " 自动更新所有parser
 
 "" nvim-lspconfig
 Plug 'neovim/nvim-lspconfig' " 官方插件，纯lua编写
@@ -155,6 +155,10 @@ Plug 'voldikss/vim-floaterm'
 "" Git相关
 " git signs
 Plug 'lewis6991/gitsigns.nvim', { 'tag': 'v1.0.2' }
+" diff view
+Plug 'sindrets/diffview.nvim'
+" 完整的git操作
+Plug 'NeogitOrg/neogit'
 
 "" 搜索相关
 Plug 'folke/flash.nvim'
@@ -164,6 +168,8 @@ Plug 'ibhagwan/fzf-lua'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'olimorris/codecompanion.nvim'
 Plug 'https://code.byted.org/chenjiaqi.cposture/codeverse.vim.git'
+
+"" 公共基础依赖
 
 " 这里调用end()会开启filetype plugin syntax on和syntax enable
 " 如果有影响可以在下方关闭，添加filetype indent off和syntax off
@@ -225,7 +231,10 @@ require('illuminate').configure({
         'dirbuf',
         'dirvish',
         'fugitive',
-        'NvimTree'
+        'NvimTree',
+        'NeogitStatus',
+        'NeogitCommitMessage',
+        'diff'
     },
     -- filetypes_allowlist: filetypes to illuminate, this is overridden by filetypes_denylist
     -- You must set filetypes_denylist = {} to override the defaults to allow filetypes_allowlist to take effect

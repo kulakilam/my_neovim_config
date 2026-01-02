@@ -158,7 +158,9 @@ require('nvim-tree').setup({
             open = true,
             -- 如果在某个tab下把tree给close掉，其他tab下的tree也会同步关闭
             close = true,
-            ignore = {}, -- 填写filetype、buffer名称
+            ignore = {
+                "DiffviewFiles" -- 打开diffview时不自动打开tree，不然四个窗口太拥挤了
+            }, -- 填写filetype、buffer名称
         },
     },
     notify = {
