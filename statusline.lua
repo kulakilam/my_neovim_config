@@ -26,6 +26,7 @@ require('lualine').setup {
                 hide_filename_extension = false,
                 show_filename_only = true,
                 show_modified_status = true,
+                icons_enabled = false, -- 不显示文件名前面的图标，没啥用
 
                 mode = 2,
 
@@ -38,13 +39,13 @@ require('lualine').setup {
                 use_mode_colors = false,
 
                 buffers_color = {
-                    active = "lualine_a_normal",     -- 当前 buffer 用强高亮（类似 mode 区）
-                    inactive = "lualine_c_inactive", -- 非当前用淡色
+                    active = "lualine_a_normal",   -- 当前 buffer 用强高亮（类似 mode 区）
+                    inactive = "lualine_b_normal", -- 非当前buffer，用弱高亮
                 },
 
                 symbols = {
                     modified = " ●",   -- 已修改用圆点标志（比默认 [+] 更好看）
-                    alternate_file = "#",
+                    alternate_file = "⇄ ", -- 上一次访问的 buffer 用井号标志
                     directory = "",
                 },
 
