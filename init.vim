@@ -158,6 +158,7 @@ Plug 'lewis6991/gitsigns.nvim', { 'tag': 'v0.9.0' }
 
 "" 搜索相关
 Plug 'folke/flash.nvim'
+Plug 'ibhagwan/fzf-lua'
 
 "" AI相关
 Plug 'nvim-lua/plenary.nvim'

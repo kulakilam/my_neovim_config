@@ -18,4 +18,4 @@ tnoremap <silent> <C-\>fk <C-\><C-n>:FloatermKill<CR>
 " 打开fzf
 " 效果1：查找时过滤一些目录，比如node_modules
 " 效果2：打开文件时，不新建window
-nnoremap <silent> <leader>ff :FloatermNew fzf<CR>
+" nnoremap <silent> <leader>ff :FloatermNew fzf<CR>
