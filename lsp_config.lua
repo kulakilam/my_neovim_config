@@ -233,3 +233,11 @@ vim.lsp.config('jdtls', {
     handlers = handlers,
 })
 vim.lsp.enable('jdtls')
+
+-- rust_analyzer
+vim.lsp.config('rust_analyzer', {
+    on_attach = on_attach,
+    flags = lsp_flags,
+    handlers = handlers,
+})
+vim.lsp.enable('rust_analyzer')
