@@ -13,8 +13,12 @@ local opts = { noremap=true, silent=true }
 -- 按两次快捷键，光标可以移动到floating window内，当有很多报错需要滚动时，这个很有用
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
 -- goto_prev和goto_next是跳到上一个或者下一个有报错的地方
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '[d', function ()
+    vim.diagnostic.jump({ count = -1, float = true })
+end, opts)
+vim.keymap.set('n', ']d', function ()
+    vim.diagnostic.jump({ count = 1, float = true })
+end, opts)
 -- setloclist是把当前buffer的所有诊断报错变成一个列表，打开一个location窗口，显示在里面，也是一种quickfix
 -- 方便快速查看，并跳转到自己感兴趣的那个
 -- 关于location列表可以查看:h location-list
@@ -36,7 +40,7 @@ local on_attach = function(client, bufnr)
     -- 只有进入这个函数，也就是一个buffer attach到一个language server时，才会开启
     -- 所以如果没有attach到language server的window就不会开启，这样比较合理
     -- 'yes:1'表示一直开启，1个宽度，如果是auto不是yes，一会有一会没有，体验不好
-    vim.api.nvim_win_set_option(0, 'signcolumn', 'yes:1')
+    vim.api.nvim_set_option_value('signcolumn', 'yes:1', { win = 0 })
     -- 使用<c-x><c-o>手动触发补全，但是有了nvim-cmp后，这个就不需要了
     -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
@@ -85,10 +89,12 @@ local lsp_flags = {
 -- 一方面是这个圆角的border看起来还可以。
 local rounded_border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
 local handlers =  {
-  ["textDocument/hover"] =  vim.lsp.with(vim.lsp.handlers.hover, {border = rounded_border}),
-  -- singatureHelp通过lsp_signature.nvim插件配置了，这里不再重复配置
-  -- ["textDocument/signatureHelp"] =  vim.lsp.with(vim.lsp.handlers.signature_help, {border = rounded_border}),
-  -- ["textDocument/definition"] =  vim.lsp.with(vim.lsp.handlers.hover, {border = rounded_border}),
+    -- 上面已经有hover的配置了，这里不再重复配置，且这种写法已经是deprecated了
+    -- ["textDocument/hover"] =  vim.lsp.with(vim.lsp.handlers.hover, {border = rounded_border}),
+
+    -- singatureHelp通过lsp_signature.nvim插件配置了，这里不再重复配置
+    -- ["textDocument/signatureHelp"] =  vim.lsp.with(vim.lsp.handlers.signature_help, {border = rounded_border}),
+    -- ["textDocument/definition"] =  vim.lsp.with(vim.lsp.handlers.hover, {border = rounded_border}),
 }
 
 -- ==================== 每个language server的配置 ====================
