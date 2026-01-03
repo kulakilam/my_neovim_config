@@ -111,7 +111,7 @@ vim.api.nvim_set_hl(0, 'GitSignsUntrackedNr', { link = 'GitSignsAddNr' })
 
 require('neogit').setup {
     integrations = {
-        diffview = true, -- 继承diffview插件
+        diffview = true, -- 集成diffview插件
     },
     disable_context_highlighting = true, -- 这个如果是false，光标经过的diff片段就会有灰色背景色高亮
     kind = 'tab',

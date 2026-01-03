@@ -214,19 +214,19 @@ require('Comment').setup {
 
 -- 配置vim-illuminate
 require('illuminate').configure({
-    -- providers: provider used to get references in the buffer, ordered by priority
+    -- providers: 用于获取缓冲区中引用的提供者，按优先级排序
     providers = {
         'lsp',
         'treesitter',
         'regex',
     },
-    -- delay: delay in milliseconds
+    -- delay: 延迟时间（毫秒）
     delay = 100,
-    -- filetype_overrides: filetype specific overrides.
-    -- The keys are strings to represent the filetype while the values are tables that
-    -- supports the same keys passed to .configure except for filetypes_denylist and filetypes_allowlist
+    -- filetype_overrides: 文件类型特定的覆盖配置。
+    -- 键是表示文件类型的字符串，值是支持与 .configure 传入相同键的表，
+    -- 但不支持 filetypes_denylist 和 filetypes_allowlist
     filetype_overrides = {},
-    -- filetypes_denylist: filetypes to not illuminate, this overrides filetypes_allowlist
+    -- filetypes_denylist: 不进行高亮的的文件类型，此设置会覆盖 filetypes_allowlist
     filetypes_denylist = {
         'dirbuf',
         'dirvish',
@@ -236,39 +236,36 @@ require('illuminate').configure({
         'NeogitCommitMessage',
         'diff'
     },
-    -- filetypes_allowlist: filetypes to illuminate, this is overridden by filetypes_denylist
-    -- You must set filetypes_denylist = {} to override the defaults to allow filetypes_allowlist to take effect
+    -- filetypes_allowlist: 进行高亮的文件类型，此设置会被 filetypes_denylist 覆盖
+    -- 要让 filetypes_allowlist 生效，必须将 filetypes_denylist 设置为空表 {}
     filetypes_allowlist = {},
-    -- modes_denylist: modes to not illuminate, this overrides modes_allowlist
-    -- See `:help mode()` for possible values
+    -- modes_denylist: 不进行高亮的模式，此设置会覆盖 modes_allowlist
+    -- 可能的值见 :help mode()
     modes_denylist = {},
-    -- modes_allowlist: modes to illuminate, this is overridden by modes_denylist
-    -- See `:help mode()` for possible values
+    -- modes_allowlist: 进行高亮的模式，此设置会被 modes_denylist 覆盖
+    -- 可能的值见 :help mode()
     modes_allowlist = {},
-    -- providers_regex_syntax_denylist: syntax to not illuminate, this overrides providers_regex_syntax_allowlist
-    -- Only applies to the 'regex' provider
-    -- Use :echom synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
+    -- providers_regex_syntax_denylist: 不进行高亮的语法，仅适用于 'regex' 提供者，此设置会覆盖 providers_regex_syntax_allowlist
+    -- 使用 :echom synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name') 查看当前语法名
     providers_regex_syntax_denylist = {},
-    -- providers_regex_syntax_allowlist: syntax to illuminate, this is overridden by providers_regex_syntax_denylist
-    -- Only applies to the 'regex' provider
-    -- Use :echom synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
+    -- providers_regex_syntax_allowlist: 进行高亮的语法，仅适用于 'regex' 提供者，此设置会被 providers_regex_syntax_denylist 覆盖
+    -- 使用 :echom synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name') 查看当前语法名
     providers_regex_syntax_allowlist = {},
-    -- under_cursor: whether or not to illuminate under the cursor
+    -- under_cursor: 是否高亮光标下的词
     under_cursor = true,
-    -- large_file_cutoff: number of lines at which to use large_file_config
-    -- The `under_cursor` option is disabled when this cutoff is hit
+    -- large_file_cutoff: 达到多少行时使用 large_file_config 配置
+    -- 达到此阈值时，under_cursor 选项将被禁用
     large_file_cutoff = nil,
-    -- large_file_config: config to use for large files (based on large_file_cutoff).
-    -- Supports the same keys passed to .configure
-    -- If nil, vim-illuminate will be disabled for large files.
+    -- large_file_config: 大文件（基于 large_file_cutoff）使用的配置。
+    -- 支持与 .configure 传入相同的键
+    -- 如果为 nil，大文件中 vim-illuminate 将被禁用
     large_file_overrides = nil,
-    -- min_count_to_highlight: minimum number of matches required to perform highlighting
+    -- min_count_to_highlight: 进行高亮所需的最小匹配数量
     min_count_to_highlight = 1,
-    -- should_enable: a callback that overrides all other settings to
-    -- enable/disable illumination. This will be called a lot so don't do
-    -- anything expensive in it.
+    -- should_enable: 一个回调函数，用于覆盖所有其他设置来启用/禁用高亮。
+    -- 此函数会被频繁调用，因此不要在其中执行昂贵的操作
     should_enable = function(bufnr) return true end,
-    -- case_insensitive_regex: sets regex case sensitivity
+    -- case_insensitive_regex: 设置 regex 的区分大小写
     case_insensitive_regex = false,
 })
 
