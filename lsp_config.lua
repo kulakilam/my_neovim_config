@@ -134,6 +134,7 @@ vim.lsp.config('gopls', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
+    cmd = { '/opt/homebrew/bin/trae-gopls' } -- 如果要切换到官方的gopls，把这行注释掉即可
 })
 vim.lsp.enable('gopls')
 
