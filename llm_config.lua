@@ -1,100 +1,204 @@
 -- 配置codecompanion
-require("codecompanion").setup({
-    strategies = {
+require('codecompanion').setup({
+
+    display = {
         chat = {
-            adapter = "deepseek"
+            window = {
+                -- 整体效果是悬浮在右侧
+                layout = 'float', -- 或 'vertical' / 'horizontal'
+                width = 0.3,
+                height = 0.9,
+                border = 'rounded',
+                relative = 'editor',
+                row = 0,
+                col = vim.o.columns,
+                zindex = 50,
+            },
+            show_token_count = true, -- 在http模式下会显示，但是在ACP下不显示，不知道为啥
+            render = 'native',
+        },
+    },
+
+    extensions = {
+        history = {
+            enabled = true, -- 启用 history 扩展
+            opts = {
+                keymap = '<leader>ch',           -- 打开会话历史，chat history的缩写
+                save_chat_keymap = '<leader>cs', -- 手动保存当前 chat，是chat save的缩写
+                auto_save = true,                -- 推荐开启自动保存，这样都不用操心，随时都可以退出
+                picker = 'fzf-lua',              -- 如果没装 telescope/snacks/fzf-lua，就用 default
+                title_generation_opts = {
+                    adapter = 'anthropic',       -- 使用 HTTP-based anthropic adapter，否则在使用ACP方式时会有warning
+                },
+            }
+        }
+    },
+
+    -- 下面是模型相关的配置
+    interactions = {
+        chat = {
+            adapter = 'claude_code'
         },
         inline = {
-            adapter = "deepseek"
-        }
+            adapter = 'anthropic', -- ACP不支持inline，所以还是用http模式的adapter，但inline模式还待验证
+        },
     },
     adapters = {
         http = {
-            ollama = function ()
-                return require("codecompanion.adapters").extend("ollama", {
+            anthropic = function()
+                return require('codecompanion.adapters').extend('anthropic', {
+                    -- 这里面的结构如果不知道确定咋配置，可以去参考下codecompanion插件下的
+                    -- 源码 lua/codecompanion/adapters/http/anthropic.lua
                     env = {
-                        url = "http://localhost:11434",
+                        api_key = os.getenv('ANTHROPIC_AUTH_TOKEN'),
                     },
+                    url = os.getenv('ANTHROPIC_BASE_URL') .. '/v1/messages',
                     schema = {
                         model = {
-                            default = "deepseek-r1:8b"
+                            default = 'claude-sonnet-4-5-20250929'
                         }
-                    }
+                    },
+                    opts = {
+                        stream = true,
+                        log_level = 'WARN',
+                    },
                 })
             end,
-            deepseek = function()
-                local function clean_streamed_data(data)
-                    if type(data) == "table" then
-                        return data.body
-                    end
-                    local find_json_start = string.find(data, "{") or 1
-                    return string.sub(data, find_json_start)
-                end
-                return require("codecompanion.adapters").extend("openai_compatible", {
+        },
+        acp = {
+            -- 在使用ACP模式时，需要先启动一个ACP服务，就是执行 claude-code-acp &
+            claude_code = function()
+                return require("codecompanion.adapters").extend("claude_code", {
                     env = {
-                        -- 需要配置这三个变量
-                        -- url = os.getenv("API_URL"),
-                        -- api_key = os.getenv("API_KEY"),
-                        -- chat_url = os.getenv("CHAT_URL"),
-                    },
-                    handlers = {
-                        chat_output = function(self, data)
-                            local output = {}
-                            if data and data ~= "" then
-                                local data_mod = clean_streamed_data(data)
-                                local ok, json = pcall(vim.json.decode, data_mod,
-                                { luanil = { object = true } })
-                                if ok and json.choices and #json.choices > 0 then
-                                    local choice = json.choices[1]
-                                    local delta = (self.opts and self.opts.stream) and
-                                    choice.delta or choice.message
-                                    if delta then
-                                        if delta.role then
-                                            output.role = delta.role
-                                        else
-                                            output.role = nil
-                                        end
-                                        output.content = ""
-                                        -- ADD THINKING OUTPUT
-                                        if delta.reasoning_content then
-                                            output.content = delta
-                                            .reasoning_content
-                                        end
-                                        if delta.content then
-                                            output.content = output
-                                            .content .. delta
-                                            .content
-                                        end
-                                        return {
-                                            status = "success",
-                                            output = output,
-                                        }
-                                    end
-                                end
-                            end
-                        end,
-                    },
-                    schema = {
-                        model = {
-                            -- default = "ep-20250213150255-bllkt", -- define llm model to be used
-                            default = "deepseek-v3-241226", -- define llm model to be used
-                        },
-                        temperature = {
-                            order = 2,
-                            mapping = "parameters",
-                            type = "number",
-                            optional = true,
-                            default = 0.0,
-                            desc =
-                            "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. We generally recommend altering this or top_p but not both.",
-                            validate = function(n)
-                                return n >= 0 and n <= 2,
-                                "Must be between 0 and 2"
-                            end,
-                        },
+                        ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY'),
                     },
                 })
             end,
-        }
-    }
+        },
+    },
+})
+-- 用来触发 CodeCompanion 的唤起和隐藏
+vim.keymap.set({ 'n', 'v' }, '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', { desc = 'Toggle CodeCompanion Chat' })
+
+-- 定义消息的 sign，会显示在 signcolumn 上
+vim.fn.sign_define('CodeCompanionUser', { text = '🙋' })
+vim.fn.sign_define('CodeCompanionRobot', { text = '🤖' })
+
+-- 定义一个全局变量来追踪 AI 响应状态
+_G.codecompanion_status = {
+    is_responding = false,
+    spinner_chars = { '⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷' },
+    spinner_index = 1,
+}
+
+-- 为每个 spinner 字符定义 sign
+for i, char in ipairs(_G.codecompanion_status.spinner_chars) do
+    vim.fn.sign_define('CodeCompanionThinking' .. i, { text = char, texthl = 'DiagnosticInfo' })
+end
+
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'codecompanion',
+    callback = function(args)
+        local bufnr = args.buf
+        
+        vim.wo.number = false -- 关闭行号
+        vim.wo.signcolumn = 'yes' -- 确保显示 signcolumn
+
+        -- 添加跳转快捷键
+        vim.keymap.set('n', '[c', function()
+            vim.fn.search('^## Me', 'b')  -- 向上跳转到上一个用户发言
+        end, { buffer = bufnr, desc = 'Jump to previous user message' })
+        vim.keymap.set('n', ']c', function()
+            vim.fn.search('^## Me')  -- 向下跳转到下一个用户发言
+        end, { buffer = bufnr, desc = 'Jump to next user message' })
+
+        -- 创建一个函数来更新 signs
+        local function update_signs()
+            -- 清除之前的 signs
+            vim.fn.sign_unplace('codecompanion_user_group', { buffer = bufnr })
+
+            local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+            for i, line in ipairs(lines) do
+                -- 匹配用户发言的行
+                if line:match('^## Me') then
+                    vim.fn.sign_place(0, 'codecompanion_user_group', 'CodeCompanionUser', bufnr, {
+                        lnum = i,
+                        priority = 10
+                    })
+                end
+                if line:match('^## CodeCompanion') then
+                    vim.fn.sign_place(0, 'codecompanion_user_group', 'CodeCompanionRobot', bufnr, {
+                        lnum = i,
+                        priority = 10
+                    })
+                end
+            end
+        end
+
+        -- 初始化时更新一次
+        vim.schedule(update_signs)
+
+        -- 监听 buffer 内容变化
+        vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI', 'BufEnter' }, {
+            buffer = bufnr,
+            callback = function()
+                vim.schedule(update_signs)
+            end,
+        })
+    end,
+})
+
+-- 监听 CodeCompanion 的请求事件
+vim.api.nvim_create_autocmd('User', {
+    pattern = 'CodeCompanionRequest*',
+    callback = function(args)
+        local bufnr = vim.api.nvim_get_current_buf()
+
+        if args.match == 'CodeCompanionRequestStarted' then
+            -- 请求开始
+            _G.codecompanion_status.is_responding = true
+
+            -- 启动旋转动画(在 signcolumn 显示)
+            if vim.bo[bufnr].filetype == 'codecompanion' then
+                local function spinner_tick()
+                    if not _G.codecompanion_status.is_responding then
+                        return
+                    end
+
+                    -- 清除之前的 thinking sign
+                    vim.fn.sign_unplace('codecompanion_thinking', { buffer = bufnr })
+
+                    -- 获取当前 buffer 的最后一行
+                    local line_count = vim.api.nvim_buf_line_count(bufnr)
+
+                    -- 放置当前 spinner 字符的 sign
+                    local sign_name = 'CodeCompanionThinking' .. _G.codecompanion_status.spinner_index
+                    vim.fn.sign_place(0, 'codecompanion_thinking', sign_name, bufnr, {
+                        lnum = line_count,
+                        priority = 20
+                    })
+
+                    -- 更新 spinner 索引
+                    _G.codecompanion_status.spinner_index =
+                    (_G.codecompanion_status.spinner_index % #_G.codecompanion_status.spinner_chars) + 1
+
+                    -- 继续下一帧动画
+                    vim.defer_fn(spinner_tick, 100)
+                end
+
+                spinner_tick()
+            end
+
+        elseif args.match == 'CodeCompanionRequestFinished' then
+            -- 请求完成
+            _G.codecompanion_status.is_responding = false
+            _G.codecompanion_status.spinner_index = 1
+
+            -- 清除思考中的 sign
+            vim.fn.sign_unplace('codecompanion_thinking', { buffer = bufnr })
+
+            -- 清除命令行消息
+            vim.api.nvim_echo({{'', 'Normal'}}, false, {})
+        end
+    end,
 })

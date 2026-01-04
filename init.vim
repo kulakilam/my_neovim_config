@@ -166,10 +166,12 @@ Plug 'ibhagwan/fzf-lua'
 
 "" AI相关
 Plug 'nvim-lua/plenary.nvim'
-Plug 'olimorris/codecompanion.nvim'
+Plug 'olimorris/codecompanion.nvim', { 'tag': 'v18.3.1' }
+Plug 'ravitemer/codecompanion-history.nvim'
 Plug 'https://code.byted.org/chenjiaqi.cposture/codeverse.vim.git'
 
 "" 公共基础依赖
+Plug 'MeanderingProgrammer/render-markdown.nvim'
 
 " 这里调用end()会开启filetype plugin syntax on和syntax enable
 " 如果有影响可以在下方关闭，添加filetype indent off和syntax off
@@ -275,6 +277,28 @@ require("ibl").setup({
     scope = {
         enabled = false;
     }
+})
+
+-- 配置markdown高亮
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "markdown", "codecompanion" },  -- 关键：在 CodeCompanion Chat 缓冲区生效
+    callback = function()
+        require("render-markdown").setup({
+            -- 自定义选项（可选，下面是推荐配置）
+            file_types = { "markdown", "codecompanion" },
+            render_modes = true,  -- 在所有模式（包括 insert 模式）渲染
+            code = {
+                sign = false,       -- 关闭左侧标记
+                width = "block",    -- 全宽代码块
+                border = "thin",    -- 细边框（或 "rounded"）
+                above = "▄",        -- 上边框装饰
+                below = "▀",        -- 下边框装饰
+            },
+            heading = {
+                icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },  -- 标题图标
+            },
+        })
+    end,
 })
 
 EOF
