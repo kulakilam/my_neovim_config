@@ -34,6 +34,10 @@ require('codecompanion').setup({
         }
     },
 
+    opts = {  -- 全局日志配置
+        log_level = "WARN",  -- 或 "TRACE" 获取最详细日志
+    },
+
     -- 下面是模型相关的配置
     interactions = {
         chat = {
@@ -81,8 +85,8 @@ require('codecompanion').setup({
 vim.keymap.set({ 'n', 'v' }, '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', { desc = 'Toggle CodeCompanion Chat' })
 
 -- 定义消息的 sign，会显示在 signcolumn 上
-vim.fn.sign_define('CodeCompanionUser', { text = '🙋' })
-vim.fn.sign_define('CodeCompanionRobot', { text = '🤖' })
+vim.fn.sign_define('CodeCompanionUser', { text = '🪴' }) -- 🙋👨‍💻🪴
+vim.fn.sign_define('CodeCompanionRobot', { text = '✨' }) -- 🤖✨🌲
 
 -- 定义一个全局变量来追踪 AI 响应状态
 _G.codecompanion_status = {
@@ -100,7 +104,7 @@ vim.api.nvim_create_autocmd('FileType', {
     pattern = 'codecompanion',
     callback = function(args)
         local bufnr = args.buf
-        
+
         vim.wo.number = false -- 关闭行号
         vim.wo.signcolumn = 'yes' -- 确保显示 signcolumn
 
