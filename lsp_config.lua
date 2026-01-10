@@ -184,12 +184,21 @@ vim.lsp.enable('ts_ls')
 
 -- pylsp
 -- @todo：似乎没有代码诊断的功能
-vim.lsp.config('pylsp', {
+-- vim.lsp.config('pylsp', {
+--     on_attach = on_attach,
+--     flags = lsp_flags,
+--     handlers = handlers,
+-- })
+-- vim.lsp.enable('pylsp')
+
+-- pyright
+-- 因为pylsp没有诊断功能，所以切换到这个
+vim.lsp.config('pyright', {
     on_attach = on_attach,
     flags = lsp_flags,
     handlers = handlers,
 })
-vim.lsp.enable('pylsp')
+vim.lsp.enable('pyright')
 
 -- vimls
 -- 按K查看文档的效果还不如不装language server
