@@ -76,6 +76,9 @@ require('codecompanion').setup({
                     env = {
                         ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY'),
                     },
+                    commands = { -- 在使用的时候去执行这个命令，而不需要手动启动，占用shell窗口
+                        default = { "claude-code-acp" },
+                    }
                 })
             end,
         },
