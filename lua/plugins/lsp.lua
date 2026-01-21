@@ -1,0 +1,316 @@
+return {
+    {
+        "neovim/nvim-lspconfig",
+        event = { "BufReadPre", "BufNewFile" },  -- 文件打开时才加载 LSP（启动更快）
+        dependencies = {
+            "ray-x/lsp_signature.nvim",  -- signature help
+        },
+
+        config = function()
+            -- ============== 全局选项 ===================
+
+            local lsp_flags = {
+                -- This is the default in Nvim 0.7+
+                debounce_text_changes = 150,
+            }
+            local handlers = {}
+            -- =========== 统一的 on_attach ==============
+            -- 定义一个on_attach函数，会在language server跟当前buffer attach后调用
+            -- 函数中做了一些按键映射
+            -- @todo：这里有个问题，如果是通过set ft=xx，貌似不会调用这里
+            local on_attach = function(_, bufnr)
+                -- 设置signcolumn，注意这里是用nvim_win_set_option而不能用nvim_buf_set_option
+                -- 可以查看`:h nvim_win_set_option()`
+                -- 只有进入这个函数，也就是一个buffer attach到一个language server时，才会开启
+                -- 所以如果没有attach到language server的window就不会开启，这样比较合理
+                -- 'yes:1'表示一直开启，1个宽度，如果是auto不是yes，一会有一会没有，体验不好
+                vim.api.nvim_set_option_value('signcolumn', 'yes:1', { win = 0 })
+                -- 使用<c-x><c-o>手动触发补全，但是有了nvim-cmp后，这个就不需要了
+                -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+                -- Mappings.
+                -- 执行`:help vim.lsp.*`查看下面这些函数的文档
+                local bufopts = { noremap=true, silent=true, buffer=bufnr }
+                vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts) -- 跳转到声明
+                vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts) -- 跳转到定义
+                -- 光标所在变量的文档介绍
+                -- 操作：按两次可以让光标进入文档，按q会关闭文档、光标回到之前的位置
+                -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+                vim.keymap.set('n', 'K', function()
+                    vim.lsp.buf.hover({ border = "rounded" })
+                end, bufopts)
+                vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts) -- 跳转到实现
+                vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts) -- 当你在输入函数参数时，会有一些提示
+                vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+                vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+                vim.keymap.set('n', '<space>wl', function()
+                    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+                end, bufopts)
+                vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts) -- 跳转到类型的定义，很有用
+                vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts) -- 重命名
+                -- 很有用，诊断到代码有问题时，可以把光标放在报错那一行，然后执行<space>ca，会提示怎么修复
+                vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+                vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts) -- 跳转到引用
+                vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+                -- LSP标准里没有提供前进、后退，可以使用vim自带的
+                -- 后退：CTRL-O  前进：CTRL-I 或 <tab>  可以查看:h CTRL-O或:h CTRL-I
+            end
+            -- ======== 全局诊断按键（推荐移到 LspAttach 或全局）==========
+            -- Mappings，按键映射，否则只能通过命令行调用api来产生一些效果
+            -- 这些映射将适用于所有language server，因为LSP协议是统一的
+
+            -- 代码诊断的按键映射
+            -- 可以通过`:help vim.diagnostic.*`查看所有的诊断api
+            -- @todo 诊断的配置为什么不放到on_attach中？？？
+            --
+            -- noremap表示映射不会一直递归找下去
+            -- silent表示命令行执行时不会显示在命令行上
+            local diagnostic_opts = { noremap=true, silent=true }
+            -- 'n'表示normal模式
+            -- open_float 把诊断信息显示在一个floating window上，默认是通过sign方式显示在句末
+            -- 按两次快捷键，光标可以移动到floating window内，当有很多报错需要滚动时，这个很有用
+            vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, diagnostic_opts)
+            -- goto_prev和goto_next是跳到上一个或者下一个有报错的地方
+            vim.keymap.set('n', '[d', function ()
+                vim.diagnostic.jump({ count = -1, float = true })
+            end, diagnostic_opts)
+            vim.keymap.set('n', ']d', function ()
+                vim.diagnostic.jump({ count = 1, float = true })
+            end, diagnostic_opts)
+            -- setloclist是把当前buffer的所有诊断报错变成一个列表，打开一个location窗口，显示在里面，也是一种quickfix
+            -- 方便快速查看，并跳转到自己感兴趣的那个
+            -- 关于location列表可以查看:h location-list
+            vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, diagnostic_opts)
+            -- ==================== lsp_signature 配置 ====================
+            -- 配置signature-help，先使用默认配置，先放在这里，如果后面要更定制化一些，再单独开个文件吧
+            -- 注意：需要配置在lspconfig之前
+            require('lsp_signature').setup({
+                cursorhold_update = false,
+            })
+            -- ================= 各个语言的 LSP 配置 ===================
+            -- lua
+            vim.lsp.config('lua_ls', {
+                on_attach = on_attach,
+                flags = lsp_flags,
+                handlers = handlers,
+                settings = {
+                    Lua = {
+                        runtime = {
+                            -- 告诉language server你用的是哪个版本的Lua，对于Neovim来说一般都是LuaJIT
+                            version = 'LuaJIT',
+                        },
+                        diagnostics = {
+                            -- Get the language server to recognize the `vim` global
+                            globals = { 'vim' },
+                        },
+                        workspace = {
+                            -- Make the server aware of Neovim runtime files
+                            library = vim.api.nvim_get_runtime_file('', true),
+                            checkThirdParty = false, -- 不加这个的话，每次打开lua文件都会弹出提示
+                        },
+                        -- Do not send telemetry data containing a randomized but unique identifier
+                        telemetry = {
+                            enable = false,
+                        },
+                    },
+                },
+            })
+            vim.lsp.enable('lua_ls')
+
+            -- gopls
+            -- 目前常见的问题：
+            -- 1、打开公司的仓库，基本上lsp都没法初始化成功，报错go/packages.Load: err: exit status 1
+            --    可能是依赖库没有权限的问题
+            -- 2、import的行大量报错，报workspace configuration error: err: exit status 1: stderr: go: downloading
+            --    是下载依赖时因为配置不正确而导致无法下载，跟go.mod、go.sum有关系
+            --    解决1：打开go.mod，第一行会报错，这时候执行<space>ca调出code action的修复建议，有两个选项
+            --          第一是执行go mod tidy，第二个是更新go.sum，我选择第一个好像不起作用，第二个就能修复
+            --    解决2：可能跟你的go版本有关系，所以把你的go版本升级到跟go.mod里面一样的
+            vim.lsp.config('gopls', {
+                on_attach = on_attach,
+                flags = lsp_flags,
+                handlers = handlers,
+                cmd = { '/opt/homebrew/bin/trae-gopls' } -- 如果要切换到官方的gopls，把这行注释掉即可
+            })
+            vim.lsp.enable('gopls')
+
+            -- ccls
+            -- 如果遇到代码中出现很多报错，可能是需要把一些路径加入到include中
+            -- 需要在工程root目录下（子目录也可以）防止一个.ccls文件，里面写上
+            -- ```
+            -- clang
+            -- -I/Users/zhongwenbing/work_in_bytedance/opensource/neovim/src/
+            -- ```
+            -- 如果遇到标准库没找到，可以在.ccls中加上以下配置，这是mac上的标准库位置
+            -- ```
+            -- -I/Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk/usr/include/
+            -- ```
+            vim.lsp.config('ccls', {
+                on_attach = on_attach,
+                flags = lsp_flags,
+                handlers = handlers,
+            })
+            vim.lsp.enable('bashls')
+
+            -- bashls
+            -- 需要安装shellcheck(https://github.com/koalaman/shellcheck)，用brew install shellcheck
+            -- 如果没有安装，lsp.log中会报错
+            vim.lsp.config('bashls', {
+                on_attach = on_attach,
+                flags = lsp_flags,
+                handlers = handlers,
+            })
+            vim.lsp.enable('bashls')
+
+            -- tsserver
+            -- 如果是单文件的，按gr会报错 Error: No Project.
+            vim.lsp.config('ts_ls', {
+                on_attach = on_attach,
+                flags = lsp_flags,
+                handlers = handlers,
+                -- filetypes = {'javascript', 'javascriptreact'}
+            })
+            vim.lsp.enable('ts_ls')
+
+            -- pylsp
+            -- @todo：似乎没有代码诊断的功能
+            -- vim.lsp.config('pylsp', {
+            --     on_attach = on_attach,
+            --     flags = lsp_flags,
+            --     handlers = handlers,
+            -- })
+            -- vim.lsp.enable('pylsp')
+
+            -- pyright
+            -- 因为pylsp没有诊断功能，所以切换到这个
+            vim.lsp.config('pyright', {
+                on_attach = on_attach,
+                flags = lsp_flags,
+                handlers = handlers,
+            })
+            vim.lsp.enable('pyright')
+
+            -- vimls
+            -- 按K查看文档的效果还不如不装language server
+            -- @todo：代码跳转需要用到，需要把lsp的能力和看文档结合起来
+            -- require('lspconfig').vimls.setup {
+            --     on_attach = on_attach,
+            --     flags = lsp_flags,
+            --     handlers = handlers,
+            -- }
+
+            -- intelephense
+            -- PHP的language server，感觉php的文档(按K)比其他语言的看着舒服
+            vim.lsp.config('intelephense', {
+                on_attach = on_attach,
+                flags = lsp_flags,
+                handlers = handlers,
+            })
+            vim.lsp.enable('intelephense')
+
+            -- jsonls
+            vim.lsp.config('jsonls', {
+                on_attach = on_attach,
+                flags = lsp_flags,
+                handlers = handlers,
+            })
+            vim.lsp.enable('jsonls')
+
+            -- volar
+            -- vue3的language server，另外一个是vuels，但安装后会提示vue3默认用volar
+            -- require('lspconfig').volar.setup {
+            --     on_attach = on_attach,
+            --     flags = lsp_flags,
+            --     handlers = handlers,
+            --     -- 因为一个vue项目工程下会包含多种文件类型，如果这里只配置了vue文件类型，
+            --     -- 不能实现不同类型之间的代码跳转，比如要从ts跳转到vue文件中
+            --     -- @todo：这里配置了json、ts等，是否会跟其他language server冲突？优先级如何？
+            --     filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json'}
+            -- }
+
+            -- jdtls，java的lsp
+            -- jdtls直接用homebrew安装
+            -- lombok下载地址：https://projectlombok.org/download
+            -- @todo: 虽然在jvm参数中配置了lombok.jar，但还是会报错，但是在~/.zshrc中配置
+            --        export JDTLS_JVM_ARGS="-javaagent:${PATH_TO_LOMBOK}/lombok.jar"后可以解决
+            vim.lsp.config('jdtls', {
+                on_attach = on_attach,
+                flags = lsp_flags,
+                handlers = handlers,
+            })
+            vim.lsp.enable('jdtls')
+
+            -- rust_analyzer
+            vim.lsp.config('rust_analyzer', {
+                on_attach = on_attach,
+                flags = lsp_flags,
+                handlers = handlers,
+            })
+            vim.lsp.enable('rust_analyzer')
+            -- ================ 激活所有LSP的配置 ===================
+        end
+    },
+    {
+        "RRethy/vim-illuminate",
+        event = { "BufReadPost", "BufNewFile" },  -- 文件打开时加载（推荐时机，启动快）
+
+        opts = {
+            -- providers: 用于获取缓冲区中引用的提供者，按优先级排序
+            providers = {
+                'lsp',
+                'treesitter',
+                'regex',
+            },
+            -- delay: 延迟时间（毫秒）
+            delay = 100,
+            -- filetype_overrides: 文件类型特定的覆盖配置。
+            -- 键是表示文件类型的字符串，值是支持与 .configure 传入相同键的表，
+            -- 但不支持 filetypes_denylist 和 filetypes_allowlist
+            filetype_overrides = {},
+            -- filetypes_denylist: 不进行高亮的的文件类型，此设置会覆盖 filetypes_allowlist
+            filetypes_denylist = {
+                'dirbuf',
+                'dirvish',
+                'fugitive',
+                'NvimTree',
+                'NeogitStatus',
+                'NeogitCommitMessage',
+                'diff'
+            },
+            -- filetypes_allowlist: 进行高亮的文件类型，此设置会被 filetypes_denylist 覆盖
+            -- 要让 filetypes_allowlist 生效，必须将 filetypes_denylist 设置为空表 {}
+            filetypes_allowlist = {},
+            -- modes_denylist: 不进行高亮的模式，此设置会覆盖 modes_allowlist
+            -- 可能的值见 :help mode()
+            modes_denylist = {},
+            -- modes_allowlist: 进行高亮的模式，此设置会被 modes_denylist 覆盖
+            -- 可能的值见 :help mode()
+            modes_allowlist = {},
+            -- providers_regex_syntax_denylist: 不进行高亮的语法，仅适用于 'regex' 提供者，此设置会覆盖 providers_regex_syntax_allowlist
+            -- 使用 :echom synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name') 查看当前语法名
+            providers_regex_syntax_denylist = {},
+            -- providers_regex_syntax_allowlist: 进行高亮的语法，仅适用于 'regex' 提供者，此设置会被 providers_regex_syntax_denylist 覆盖
+            -- 使用 :echom synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name') 查看当前语法名
+            providers_regex_syntax_allowlist = {},
+            -- under_cursor: 是否高亮光标下的词
+            under_cursor = true,
+            -- large_file_cutoff: 达到多少行时使用 large_file_config 配置
+            -- 达到此阈值时，under_cursor 选项将被禁用
+            large_file_cutoff = nil,
+            -- large_file_config: 大文件（基于 large_file_cutoff）使用的配置。
+            -- 支持与 .configure 传入相同的键
+            -- 如果为 nil，大文件中 vim-illuminate 将被禁用
+            large_file_overrides = nil,
+            -- min_count_to_highlight: 进行高亮所需的最小匹配数量
+            min_count_to_highlight = 1,
+            -- should_enable: 一个回调函数，用于覆盖所有其他设置来启用/禁用高亮。
+            -- 此函数会被频繁调用，因此不要在其中执行昂贵的操作
+            should_enable = function() return true end,
+            -- case_insensitive_regex: 设置 regex 的区分大小写
+            case_insensitive_regex = false,
+        },
+        config = function(_, opts)
+            require('illuminate').configure(opts)
+        end
+    }
+}
